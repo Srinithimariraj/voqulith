@@ -134,11 +134,11 @@ function ImpactBody({ pop }: { pop: ReturnType<typeof buildPopulation> }) {
         <ImpactTable rows={pains} firstCol="Pain point" />
       </Panel>
 
-      <div className="mb-6 grid gap-6 xl:grid-cols-5">
-        <Panel title="Feedback count by theme" className="xl:col-span-2">
+      <div className="mb-6 grid gap-6">
+        <Panel title="Feedback count by theme">
           <HorizontalBars data={themes.map((t) => ({ name: t.name, value: t.count }))} />
         </Panel>
-        <Panel title="Theme share, severity and business impact" description="Percentage of all unique feedback." className="xl:col-span-3">
+        <Panel title="Theme share, severity and business impact" description="Percentage of all unique feedback.">
           <ImpactTable rows={themes} firstCol="Theme" compact />
         </Panel>
       </div>
@@ -421,6 +421,9 @@ function ComparePanel({ pop }: { pop: ReturnType<typeof buildPopulation> }) {
               </TableBody>
             </Table>
           </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            Theme changes are exact counts, but with only a few complaints per theme a small difference can show as a large percentage.
+          </p>
         </>
       )}
     </Panel>

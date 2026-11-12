@@ -122,7 +122,7 @@ export function TrendChart({
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--muted)" }} />
           <Legend wrapperStyle={{ fontSize: 12 }} />
           <Bar dataKey="feedback" name="All feedback" fill="var(--primary)" fillOpacity={0.22} radius={[6, 6, 0, 0]} barSize={28} />
-          <Line dataKey="complaints" name="Complaints" stroke="var(--negative)" strokeWidth={2.5} dot={{ r: 3 }} type="monotone" />
+          <Line dataKey="complaints" name="Complaints" stroke="var(--negative)" strokeWidth={2.5} dot={{ r: 3 }} type="linear" />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
