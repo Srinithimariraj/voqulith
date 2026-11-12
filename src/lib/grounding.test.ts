@@ -29,7 +29,7 @@ describe("quote grounding", () => {
         ],
         churn_signals: [
           { feedback_id: "FB-0002", signal_type: "uninstall_intent", evidence: "Uninstalling.", risk_level: "high", rationale: "", confidence: 0.9 },
-          { feedback_id: "FB-0099", signal_type: "uninstall_intent", evidence: "Uninstalling.", risk_level: "high", rationale: "", confidence: 0.9 },
+          { feedback_id: "FB-0002", signal_type: "competitor_switch", evidence: "Moving to Swiggy now", risk_level: "high", rationale: "", confidence: 0.9 },
         ],
       }),
       ctx,
