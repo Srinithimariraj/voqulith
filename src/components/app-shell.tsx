@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   AudioWaveform,
+  ChartLine,
   Layers,
   LayoutDashboard,
   Map as MapIcon,
@@ -24,6 +25,7 @@ const NAV = [
   { to: "/themes", label: "Theme Clustering", icon: Layers },
   { to: "/churn", label: "Churn Detection", icon: UserX },
   { to: "/roadmap", label: "Product Roadmap", icon: MapIcon },
+  { to: "/impact", label: "Impact Measurement", icon: ChartLine },
   { to: "/quotes", label: "Customer Quotes", icon: Quote },
 ] as const;
 
