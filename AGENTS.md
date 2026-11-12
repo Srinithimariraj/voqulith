@@ -28,3 +28,11 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- Feedback and the latest analysis live in browser storage (`src/lib/store.ts`); there is no account system yet, so nothing is shared between users.
+- All AI calls go through server functions in `src/lib/analysis.functions.ts` → `analysis.server.ts` on the Lovable AI Gateway; the browser never sees model keys.
+- AI output is never shown raw: `groundAnalysis` (src/lib/grounding.ts) drops unknown IDs, rejects non-verbatim quotes/churn evidence, and computes all counts/customers itself — keep every new insight type flowing through it.
+- Duplicate rules live in `src/lib/dedupe.ts`; only unique feedback is sent to the AI and counted as customers.
+- Sample data in `src/lib/sample-data.ts` is synthetic and must stay labelled as such in the UI (origin "sample").
