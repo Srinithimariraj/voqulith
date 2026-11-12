@@ -224,7 +224,7 @@ export type AnalyzeFeedbackResponse =
   | { ok: true; data: AnalyzeFeedbackOutput }
   | { ok: false; error: { code: AnalyzeFeedbackErrorCode; message: string } };
 
-const level = (v: number) => (v >= 0.75 ? "high" : v >= 0.5 ? "medium" : "low") as const;
+const level = (v: number): "high" | "medium" | "low" => (v >= 0.75 ? "high" : v >= 0.5 ? "medium" : "low");
 
 export function toApiResponse(
   r: AnalysisResult,

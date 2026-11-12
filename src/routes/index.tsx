@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
+  AlertCircle,
   AlertOctagon,
+  RefreshCw,
+  ShieldCheck,
   ArrowRight,
   FlaskConical,
   Layers,
@@ -12,9 +15,12 @@ import {
   UserX,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { HorizontalBars, SentimentDonut } from "@/components/charts";
 import {
+  Confidence,
+  EvidenceList,
   FeedbackRef,
   PageHeader,
   Panel,
@@ -89,6 +95,21 @@ function Dashboard() {
       />
       <SampleNotice />
       <StaleBanner />
+      {runner.status === "error" && runner.error && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="size-4" />
+          <AlertTitle>The analysis didn't complete</AlertTitle>
+          <AlertDescription className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <span>
+              {runner.error}
+              {analysis ? " Your previous results are still shown below." : ""}
+            </span>
+            <Button size="sm" variant="outline" className="w-fit shrink-0" onClick={runner.run}>
+              <RefreshCw /> Try again
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-5">
         <StatCard
@@ -140,7 +161,6 @@ function Dashboard() {
               {runner.status === "running" ? <Loader2 className="animate-spin" /> : <Sparkles />}
               {runner.status === "running" ? "Analyzing…" : "Analyze feedback"}
             </Button>
-            {runner.status === "error" && <p className="mt-3 text-sm text-destructive">{runner.error}</p>}
           </div>
           <Panel title="Feedback by source" description="Unique items">
             <HorizontalBars data={sourceCounts} />
@@ -161,8 +181,103 @@ function Dashboard() {
             </Panel>
           </div>
 
-          <Panel className="mt-6" title="Executive summary" action={<More to="/analysis" label="Full analysis" />}>
-            <p className="text-sm leading-relaxed text-foreground">{analysis.executiveSummary.summary}</p>
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+            <Panel
+              title="Executive summary"
+              action={<More to="/analysis" label="Full analysis" />}
+            >
+              <p className="text-sm leading-relaxed text-foreground">{analysis.executiveSummary.summary}</p>
+              {analysis.executiveSummary.keyFindings.length > 0 && (
+                <ul className="mt-4 space-y-2.5">
+                  {analysis.executiveSummary.keyFindings.slice(0, 3).map((f, i) => (
+                    <li key={i} className="rounded-xl bg-muted px-3 py-2.5">
+                      <p className="text-xs text-foreground">{f.text}</p>
+                      {f.evidenceIds.length > 0 && (
+                        <div className="mt-1.5">
+                          <EvidenceList ids={f.evidenceIds} max={5} />
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Panel>
+            <Panel
+              title={
+                <span className="flex items-center gap-2">
+                  <ShieldCheck className="size-4 text-positive" /> Confidence & evidence
+                </span>
+              }
+              action={<Confidence value={analysis.executiveSummary.confidence} />}
+            >
+              <ul className="space-y-1.5 text-xs">
+                <li className="flex justify-between gap-2">
+                  <span className="text-muted-foreground">Quotes verified word-for-word</span>
+                  <span className="font-mono font-semibold text-foreground">
+                    {analysis.verification.quotesProposed - analysis.verification.quotesRejected}/
+                    {analysis.verification.quotesProposed}
+                  </span>
+                </li>
+                <li className="flex justify-between gap-2">
+                  <span className="text-muted-foreground">Duplicates not double-counted</span>
+                  <span className="font-mono font-semibold text-foreground">{analysis.totals.duplicatesExcluded}</span>
+                </li>
+                <li className="flex justify-between gap-2">
+                  <span className="text-muted-foreground">Unsupported insights removed</span>
+                  <span className="font-mono font-semibold text-foreground">
+                    {analysis.verification.insightsDroppedNoEvidence + analysis.verification.churnRejected}
+                  </span>
+                </li>
+              </ul>
+              <p className="mt-4 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Limitations
+              </p>
+              {analysis.executiveSummary.limitations.length ? (
+                <ul className="mt-1.5 list-disc space-y-1 pl-4 text-xs text-foreground">
+                  {analysis.executiveSummary.limitations.slice(0, 4).map((l, i) => (
+                    <li key={i}>{l}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-1.5 text-xs text-muted-foreground">None stated.</p>
+              )}
+            </Panel>
+          </div>
+
+          <Panel className="mt-6" title="Theme frequencies" description="Share of unique feedback · customers are distinct people" action={<More to="/themes" />}>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-sm">
+                <thead>
+                  <tr className="border-b text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+                    <th className="pb-2 font-semibold">Theme</th>
+                    <th className="pb-2 text-right font-semibold">Feedback</th>
+                    <th className="pb-2 text-right font-semibold">Customers</th>
+                    <th className="w-1/3 pb-2 pl-6 font-semibold">Share</th>
+                    <th className="pb-2 text-right font-semibold">Severity</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {analysis.themes.map((t) => (
+                    <tr key={t.id}>
+                      <td className="py-2.5 pr-3 font-medium text-foreground">{t.name}</td>
+                      <td className="py-2.5 text-right font-mono text-xs text-foreground">{t.count}</td>
+                      <td className="py-2.5 text-right font-mono text-xs text-foreground">{t.customers}</td>
+                      <td className="py-2.5 pl-6">
+                        <div className="flex items-center gap-2">
+                          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+                            <div className="h-full rounded-full bg-gradient-brand" style={{ width: `${Math.min(100, t.percentage)}%` }} />
+                          </div>
+                          <span className="w-12 text-right font-mono text-xs text-muted-foreground">{t.percentage}%</span>
+                        </div>
+                      </td>
+                      <td className="py-2.5 text-right">
+                        <SeverityPill value={t.severity} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </Panel>
 
           <div className="mt-6 grid gap-6 lg:grid-cols-3">
