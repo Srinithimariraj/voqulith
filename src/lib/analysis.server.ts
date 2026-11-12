@@ -8,6 +8,7 @@ import {
 } from "@lovable.dev/ai-gateway";
 import { rawAnalysisSchema } from "./analysis-schema";
 import { groundAnalysis } from "./grounding";
+import type { AnalyzeFeedbackErrorCode } from "./analysis-contract";
 import type { AnalysisInputItem, AnalysisResult, ExtractedFeedback } from "./types";
 
 export const ANALYSIS_MODEL = "google/gemini-3.8-flash" as const;
@@ -70,7 +71,7 @@ function extractJson(content: string): unknown {
     const start = trimmed.indexOf("{");
     const end = trimmed.lastIndexOf("}");
     if (start >= 0 && end > start) return JSON.parse(trimmed.slice(start, end + 1));
-    throw new Error("The AI response was not valid JSON.");
+    throw new AiResponseError("The AI response was not valid JSON. Please try again.");
   }
 }
 
@@ -84,22 +85,28 @@ function messageText(content: unknown): string {
   return "";
 }
 
-export function friendlyAiError(err: unknown): string {
+export function classifyAiError(err: unknown): { code: AnalyzeFeedbackErrorCode; message: string } {
   if (err instanceof PaymentRequiredError)
-    return "AI credits are used up for this workspace. Add credits, then try again.";
+    return { code: "ai_credits_exhausted", message: "AI credits are used up for this workspace. Add credits, then try again." };
   if (err instanceof RateLimitError)
-    return "The AI service is busy right now. Please wait a minute and try again.";
+    return { code: "ai_rate_limited", message: "The AI service is busy right now. Please wait a minute and try again." };
   if (err instanceof TimeoutError || err instanceof NetworkError)
-    return "The AI request timed out or lost connection. Please try again.";
-  if (err instanceof GatewayError) return `The AI service returned an error (${err.code}).`;
-  if (err instanceof Error) return err.message;
-  return "Unexpected error while running the analysis.";
+    return { code: "ai_timeout", message: "The AI request timed out or lost connection. Please try again." };
+  if (err instanceof GatewayError)
+    return { code: "ai_error", message: `The AI service returned an error (${err.code}). Please try again.` };
+  if (err instanceof AiResponseError) return { code: "ai_invalid_response", message: err.message };
+  return { code: "ai_error", message: "Unexpected error while running the analysis. Please try again." };
 }
+
+export function friendlyAiError(err: unknown): string {
+  return classifyAiError(err).message;
+}
+
+class AiResponseError extends Error {}
 
 export async function runAnalysis(args: {
   items: AnalysisInputItem[];
   totalFeedbackItems: number;
-  datasetSignature: string;
 }): Promise<AnalysisResult> {
   const completion = await generateChatCompletion({
     model: ANALYSIS_MODEL,
@@ -115,15 +122,15 @@ export async function runAnalysis(args: {
   });
 
   const text = messageText(completion.choices[0]?.message?.content);
-  if (!text) throw new Error("The AI returned an empty response. Please try again.");
+  if (!text) throw new AiResponseError("The AI returned an empty response. Please try again.");
   const parsed = rawAnalysisSchema.safeParse(extractJson(text));
-  if (!parsed.success) throw new Error("The AI response did not match the expected structure.");
+  if (!parsed.success) throw new AiResponseError("The AI response did not match the expected structure. Please try again.");
 
   return groundAnalysis(parsed.data, {
     items: args.items,
     totalFeedbackItems: args.totalFeedbackItems,
     model: ANALYSIS_MODEL,
-    datasetSignature: args.datasetSignature,
+    datasetSignature: "",
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
   });
