@@ -75,9 +75,10 @@ function ImpactPage() {
 }
 
 function ImpactBody({ pop }: { pop: ReturnType<typeof buildPopulation> }) {
-  const { analysis } = useDataset();
+  const { analysis, dedupe } = useDataset();
   const a = analysis!;
   const labels = a.itemLabels;
+  const duplicatesRemoved = Object.keys(dedupe.duplicateOf).length;
 
   const pains = useMemo(
     () => impactRows(a.painPoints.map((p) => ({ id: p.id, name: p.title, severity: p.severity, feedbackIds: p.feedbackIds })), pop, a.recommendations),
@@ -96,7 +97,7 @@ function ImpactBody({ pop }: { pop: ReturnType<typeof buildPopulation> }) {
     <>
       <StaleBanner />
       <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Unique feedback" value={pop.items.length} hint={`${dedupe(pop)} duplicates already removed`} icon={<MessageSquareWarning />} />
+        <StatCard label="Unique feedback" value={pop.items.length} hint={`${duplicatesRemoved} duplicates already removed`} icon={<MessageSquareWarning />} />
         <StatCard
           label="Complaints"
           value={complaintIds.length}
@@ -146,10 +147,6 @@ function ImpactBody({ pop }: { pop: ReturnType<typeof buildPopulation> }) {
       <ComparePanel pop={pop} />
     </>
   );
-
-  function dedupe(p: typeof pop) {
-    return Math.max(0, a.totals.feedbackItems - a.totals.uniqueFeedback, 0) || 0 + 0 * p.items.length;
-  }
 }
 
 function ImpactTable({ rows, firstCol, compact }: { rows: ImpactRow[]; firstCol: string; compact?: boolean }) {
