@@ -11,6 +11,9 @@ import { groundAnalysis } from "./grounding";
 import type { AnalyzeFeedbackErrorCode } from "./analysis-contract";
 import type { AnalysisInputItem, AnalysisResult, ExtractedFeedback } from "./types";
 
+/** Model output that could not be parsed into the expected structure. */
+class AiResponseError extends Error {}
+
 export const ANALYSIS_MODEL = "google/gemini-3.8-flash" as const;
 
 const SYSTEM_PROMPT = `You are VOICE OF COPILOT, a customer-feedback intelligence analyst for product managers.
@@ -102,7 +105,6 @@ export function friendlyAiError(err: unknown): string {
   return classifyAiError(err).message;
 }
 
-class AiResponseError extends Error {}
 
 export async function runAnalysis(args: {
   items: AnalysisInputItem[];
