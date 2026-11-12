@@ -13,7 +13,7 @@ const fb = (id: string, text: string, customer?: string): FeedbackItem => ({
 
 describe("duplicate feedback", () => {
   it("collapses identical text posted to two channels into one item", () => {
-    const r = dedupeFeedback([fb("A", "Platform fee went up AGAIN!", "C1"), fb("B", "@zomato platform fee went up again", "C1")]);
+    const r = dedupeFeedback([fb("A", "Zomato platform fee went up AGAIN!", "C1"), fb("B", "@zomato platform fee went up again", "C1")]);
     expect(r.unique.map((u) => u.id)).toEqual(["A"]);
     expect(r.duplicateOf["B"]).toBe("A");
   });
