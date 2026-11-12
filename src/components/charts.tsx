@@ -23,7 +23,8 @@ export function SentimentDonut({ sentiment }: { sentiment: AnalysisResult["senti
     .filter((d) => d.value > 0);
   const total = data.reduce((s, d) => s + d.value, 0);
   return (
-    <div className="flex flex-col items-center gap-6 sm:flex-row">
+    <div className="@container">
+    <div className="flex flex-col items-center gap-6 @sm:flex-row">
       <div className="relative h-44 w-44 shrink-0">
         <ResponsiveContainer>
           <PieChart>
@@ -68,6 +69,7 @@ export function SentimentDonut({ sentiment }: { sentiment: AnalysisResult["senti
         )}
       </ul>
     </div>
+    </div>
   );
 }
 
@@ -87,7 +89,8 @@ export function HorizontalBars({
           <YAxis
             type="category"
             dataKey="name"
-            width={150}
+            width={170}
+            tickFormatter={(v: string) => (v.length > 24 ? `${v.slice(0, 23)}…` : v)}
             tickLine={false}
             axisLine={false}
             tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
