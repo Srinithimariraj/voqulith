@@ -26,8 +26,7 @@ export async function parseSpreadsheet(file: File): Promise<SheetData> {
   return { columns, rows };
 }
 
-const GUESS: Record<"text" | "customer" | "date" | "rating" | "source", RegExp> = {
-  text: /^(feedback|review|comment|comments|text|message|body|content|description|verbatim|response|complaint)/i,
+const GUESS: Record<"customer" | "date" | "rating" | "source", RegExp> = {
   customer: /(customer|user|client|email|name|author|account|reviewer)/i,
   date: /(date|time|created|submitted)/i,
   rating: /(rating|score|stars|nps|csat)/i,
@@ -36,23 +35,20 @@ const GUESS: Record<"text" | "customer" | "date" | "rating" | "source", RegExp> 
 
 export type ColumnMap = Record<"text" | "customer" | "date" | "rating" | "source", string | null>;
 
+const ID_LIKE = /(^|[_\s-])(id|no|num|number|#|key|uuid)$|^id$/i;
+
+function avgLen(rows: Record<string, string>[], c: string): number {
+  const sample = rows.slice(0, 50);
+  return sample.reduce((s, r) => s + (r[c]?.length ?? 0), 0) / Math.max(1, sample.length);
+}
+
 export function guessColumns(columns: string[], rows: Record<string, string>[]): ColumnMap {
   const pick = (re: RegExp, exclude: (string | null)[] = []) =>
     columns.find((c) => re.test(c.trim()) && !exclude.includes(c)) ?? null;
-  let text = pick(GUESS.text);
-  if (!text) {
-    // fall back to the column with the longest average content
-    let best: string | null = null;
-    let bestLen = 0;
-    for (const c of columns) {
-      const avg = rows.slice(0, 50).reduce((s, r) => s + (r[c]?.length ?? 0), 0) / Math.min(rows.length, 50);
-      if (avg > bestLen) {
-        bestLen = avg;
-        best = c;
-      }
-    }
-    text = best;
-  }
+  const textual = columns.filter((c) => !ID_LIKE.test(c.trim()));
+  const named = textual.filter((c) => /(feedback|review|comment|text|message|body|content|description|verbatim|response|complaint)/i.test(c));
+  const pool = named.length ? named : textual.length ? textual : columns;
+  const text = pool.reduce<string | null>((best, c) => (best === null || avgLen(rows, c) > avgLen(rows, best) ? c : best), null);
   return {
     text,
     customer: pick(GUESS.customer, [text]),
