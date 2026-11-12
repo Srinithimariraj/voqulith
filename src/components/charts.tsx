@@ -121,7 +121,7 @@ export function TrendChart({
           <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
           <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--muted)" }} />
           <Legend wrapperStyle={{ fontSize: 12 }} />
-          <Bar dataKey="feedback" name="All feedback" fill="var(--primary-soft)" radius={[6, 6, 0, 0]} barSize={28} />
+          <Bar dataKey="feedback" name="All feedback" fill="var(--primary)" fillOpacity={0.22} radius={[6, 6, 0, 0]} barSize={28} />
           <Line dataKey="complaints" name="Complaints" stroke="var(--negative)" strokeWidth={2.5} dot={{ r: 3 }} type="monotone" />
         </ComposedChart>
       </ResponsiveContainer>
