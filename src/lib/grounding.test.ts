@@ -76,3 +76,21 @@ describe("evidence linking", () => {
     expect(r.totals.duplicatesExcluded).toBe(1);
   });
 });
+
+describe("lenient parsing", () => {
+  it("accepts feedback_id as an alias for item label id", () => {
+    const r = groundAnalysis(
+      raw({ item_labels: [{ feedback_id: "FB-0001", sentiment: "negative", theme_id: null }] }),
+      ctx,
+    );
+    expect(r.sentiment.negative).toBe(1);
+    expect(r.sentiment.unlabeled).toBe(2);
+  });
+  it("attaches a churn signal without an ID only when its evidence matches one feedback", () => {
+    const r = groundAnalysis(
+      raw({ churn_signals: [{ signal_type: "uninstall_intent", evidence: "Uninstalling.", risk_level: "high" }] }),
+      ctx,
+    );
+    expect(r.churnSignals[0]?.feedbackId).toBe("FB-0002");
+  });
+});

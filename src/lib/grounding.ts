@@ -143,7 +143,11 @@ export function groundAnalysis(raw: RawAnalysis, ctx: GroundingContext): Analysi
   const seenQuotes = new Set<string>();
   const quotes: Quote[] = [];
   for (const q of raw.quotes) {
-    const item = lookup.get(q.feedback_id.trim());
+    let item = lookup.get(q.feedback_id.trim());
+    if (!item) {
+      const matches = ctx.items.filter((i) => isVerbatim(q.quote, i.text));
+      if (matches.length === 1) item = lookup.get(matches[0]!.id);
+    }
     if (!item || !isVerbatim(q.quote, item.text)) {
       quotesRejected++;
       continue;
@@ -164,7 +168,12 @@ export function groundAnalysis(raw: RawAnalysis, ctx: GroundingContext): Analysi
   const churnSeen = new Set<string>();
   const churnSignals: ChurnSignal[] = [];
   for (const c of raw.churn_signals) {
-    const item = lookup.get(c.feedback_id.trim());
+    let item = lookup.get(c.feedback_id.trim());
+    if (!item) {
+      // Missing/invalid ID: attach only if the verbatim evidence appears in exactly one feedback item.
+      const matches = ctx.items.filter((i) => isVerbatim(c.evidence, i.text));
+      if (matches.length === 1) item = lookup.get(matches[0]!.id);
+    }
     if (!item || !isVerbatim(c.evidence, item.text)) {
       churnRejected++;
       continue;

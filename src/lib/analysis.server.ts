@@ -33,7 +33,17 @@ TASKS
 6. recommendations: 3-8 roadmap items (id "R1"...): title, problem, evidence_ids, business_impact, priority (P0 = urgent, revenue/retention risk or broken core flow; P1 = important; P2 = improvement), next_action (concrete first step for the PM), confidence 0-1, assumptions (list).
 7. executive_summary: summary (3-5 sentences for a PM leader), key_findings (finding + evidence_ids), confidence 0-1, assumptions, limitations.
 
-Return ONLY a JSON object with keys: executive_summary, item_labels, themes, pain_points, quotes, churn_signals, recommendations.`;
+Return ONLY a JSON object with EXACTLY these keys and field names:
+{
+  "executive_summary": {"summary": string, "key_findings": [{"finding": string, "evidence_ids": [string]}], "confidence": number, "assumptions": [string], "limitations": [string]},
+  "item_labels": [{"id": "FB-0001", "sentiment": "negative", "theme_id": "T1"}],
+  "themes": [{"id": "T1", "name": string, "description": string, "sentiment": "negative", "severity": "high", "feedback_ids": [string], "confidence": number}],
+  "pain_points": [{"id": "P1", "title": string, "description": string, "severity": "high", "theme_id": "T1", "feedback_ids": [string]}],
+  "quotes": [{"feedback_id": "FB-0001", "quote": string, "theme_id": "T1", "sentiment": "negative"}],
+  "churn_signals": [{"feedback_id": "FB-0004", "signal_type": "refund_frustration", "evidence": string, "risk_level": "high", "rationale": string, "confidence": number}],
+  "recommendations": [{"id": "R1", "title": string, "problem": string, "evidence_ids": [string], "business_impact": string, "priority": "P0", "next_action": string, "confidence": number, "assumptions": [string]}]
+}
+Every churn signal and quote MUST include its feedback_id.`;
 
 function formatItems(items: AnalysisInputItem[]): string {
   return items
