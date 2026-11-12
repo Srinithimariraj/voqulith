@@ -90,7 +90,7 @@ function Dashboard() {
       <SampleNotice />
       <StaleBanner />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-5">
         <StatCard
           label="Total feedback"
           value={feedback.length}
