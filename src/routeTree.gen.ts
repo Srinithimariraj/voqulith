@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as ChurnRouteImport } from './routes/churn'
+import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as ThemesRouteImport } from './routes/themes'
@@ -30,6 +31,11 @@ const AnalysisRoute = AnalysisRouteImport.update({
 const ChurnRoute = ChurnRouteImport.update({
   id: '/churn',
   path: '/churn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImpactRoute = ImpactRouteImport.update({
+  id: '/impact',
+  path: '/impact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuotesRoute = QuotesRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
   '/churn': typeof ChurnRoute
+  '/impact': typeof ImpactRoute
   '/quotes': typeof QuotesRoute
   '/roadmap': typeof RoadmapRoute
   '/themes': typeof ThemesRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
   '/churn': typeof ChurnRoute
+  '/impact': typeof ImpactRoute
   '/quotes': typeof QuotesRoute
   '/roadmap': typeof RoadmapRoute
   '/themes': typeof ThemesRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
   '/churn': typeof ChurnRoute
+  '/impact': typeof ImpactRoute
   '/quotes': typeof QuotesRoute
   '/roadmap': typeof RoadmapRoute
   '/themes': typeof ThemesRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analysis'
     | '/churn'
+    | '/impact'
     | '/quotes'
     | '/roadmap'
     | '/themes'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analysis'
     | '/churn'
+    | '/impact'
     | '/quotes'
     | '/roadmap'
     | '/themes'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analysis'
     | '/churn'
+    | '/impact'
     | '/quotes'
     | '/roadmap'
     | '/themes'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalysisRoute: typeof AnalysisRoute
   ChurnRoute: typeof ChurnRoute
+  ImpactRoute: typeof ImpactRoute
   QuotesRoute: typeof QuotesRoute
   RoadmapRoute: typeof RoadmapRoute
   ThemesRoute: typeof ThemesRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/churn'
       fullPath: '/churn'
       preLoaderRoute: typeof ChurnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/impact': {
+      id: '/impact'
+      path: '/impact'
+      fullPath: '/impact'
+      preLoaderRoute: typeof ImpactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quotes': {
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalysisRoute: AnalysisRoute,
   ChurnRoute: ChurnRoute,
+  ImpactRoute: ImpactRoute,
   QuotesRoute: QuotesRoute,
   RoadmapRoute: RoadmapRoute,
   ThemesRoute: ThemesRoute,

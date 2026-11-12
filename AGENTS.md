@@ -37,3 +37,4 @@ use the editor.
 - AI output is never shown raw: `groundAnalysis` (src/lib/grounding.ts) drops unknown IDs, rejects non-verbatim quotes/churn evidence, and computes all counts/customers itself — keep every new insight type flowing through it.
 - Duplicate rules live in `src/lib/dedupe.ts`; only unique feedback is sent to the AI and counted as customers.
 - Sample data in `src/lib/sample-data.ts` is synthetic and must stay labelled as such in the UI (origin "sample").
+- Impact Measurement metrics (customers affected, theme share, complaint trends, period comparison) are pure functions in `src/lib/impact.ts`, computed from current unique feedback plus grounded labels; % changes are only produced when both periods meet the minimum-data rule, so trends are never estimated.

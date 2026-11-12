@@ -1,4 +1,4 @@
-import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { AnalysisResult } from "@/lib/types";
 
 const SENT_COLORS = {
@@ -102,6 +102,28 @@ export function HorizontalBars({
             ))}
           </Bar>
         </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export function TrendChart({
+  data,
+}: {
+  data: { label: string; feedback: number; complaints: number }[];
+}) {
+  return (
+    <div style={{ height: 260 }}>
+      <ResponsiveContainer>
+        <ComposedChart data={data} margin={{ left: -16, right: 8, top: 8, bottom: 0 }}>
+          <CartesianGrid vertical={false} stroke="var(--border)" />
+          <XAxis dataKey="label" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
+          <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
+          <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--muted)" }} />
+          <Legend wrapperStyle={{ fontSize: 12 }} />
+          <Bar dataKey="feedback" name="All feedback" fill="var(--primary)" fillOpacity={0.22} radius={[6, 6, 0, 0]} barSize={28} />
+          <Line dataKey="complaints" name="Complaints" stroke="var(--negative)" strokeWidth={2.5} dot={{ r: 3 }} type="linear" />
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
