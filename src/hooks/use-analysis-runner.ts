@@ -42,8 +42,8 @@ export function useAnalysisRunner() {
         description: `${result.themes.length} themes · ${result.churnSignals.length} churn signals`,
       });
     } catch (err) {
-      const message =
-        err instanceof Error && err.message ? err.message : "Could not reach the analysis service. Check your connection and try again.";
+      console.error("analyze-feedback request failed", err);
+      const message = "Couldn't reach the analysis service. Check your connection and try again.";
       setRun({ status: "error", error: message, startedAt: null });
       toast.error("Analysis failed", { description: message });
     }
