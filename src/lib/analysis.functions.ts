@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import type { AnalysisResult } from "./types";
-import type { ExtractedFeedback } from "./analysis.server";
+import type { AnalysisResult, ExtractedFeedback } from "./types";
 
 const itemSchema = z.object({
   id: z.string().min(1).max(40),

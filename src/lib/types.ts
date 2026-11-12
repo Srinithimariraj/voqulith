@@ -154,3 +154,10 @@ export interface AnalysisResult {
   recommendations: Recommendation[];
   verification: Verification;
 }
+
+export interface ExtractedFeedback {
+  text: string;
+  customer: string | null;
+  date: string | null;
+  rating: number | null;
+}

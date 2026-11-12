@@ -8,7 +8,7 @@ import {
 } from "@lovable.dev/ai-gateway";
 import { rawAnalysisSchema } from "./analysis-schema";
 import { groundAnalysis } from "./grounding";
-import type { AnalysisInputItem, AnalysisResult } from "./types";
+import type { AnalysisInputItem, AnalysisResult, ExtractedFeedback } from "./types";
 
 export const ANALYSIS_MODEL = "google/gemini-3.8-flash" as const;
 
@@ -119,12 +119,6 @@ export async function runAnalysis(args: {
   });
 }
 
-export interface ExtractedFeedback {
-  text: string;
-  customer: string | null;
-  date: string | null;
-  rating: number | null;
-}
 
 export async function runScreenshotExtraction(imageDataUrl: string): Promise<{
   items: ExtractedFeedback[];

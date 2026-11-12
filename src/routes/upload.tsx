@@ -36,7 +36,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeader, Panel, Pill, SampleNotice, SyntheticPill } from "@/components/vc";
 import { extractScreenshotFeedback } from "@/lib/analysis.functions";
-import type { ExtractedFeedback } from "@/lib/analysis.server";
 import {
   fileKind,
   guessColumns,
@@ -56,7 +55,7 @@ import {
   removeSampleData,
   useDataset,
 } from "@/lib/store";
-import { SOURCES, type Source } from "@/lib/types";
+import { SOURCES, type ExtractedFeedback, type Source } from "@/lib/types";
 
 export const Route = createFileRoute("/upload")({
   head: () => ({
