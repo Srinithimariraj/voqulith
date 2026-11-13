@@ -66,7 +66,7 @@ function formatItems(items: AnalysisInputItem[]): string {
     .join("\n\n");
 }
 
-function extractJson(content: string): unknown {
+export function extractJson(content: string): unknown {
   const trimmed = content.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
   try {
     return JSON.parse(trimmed);
@@ -78,7 +78,7 @@ function extractJson(content: string): unknown {
   }
 }
 
-function messageText(content: unknown): string {
+export function messageText(content: unknown): string {
   if (typeof content === "string") return content;
   if (Array.isArray(content)) {
     return content
