@@ -7,6 +7,7 @@ import {
   Map as MapIcon,
   Menu,
   Quote,
+  Scale,
   Sparkles,
   Upload,
   UserX,
@@ -26,6 +27,7 @@ const NAV = [
   { to: "/churn", label: "Churn Detection", icon: UserX },
   { to: "/roadmap", label: "Product Roadmap", icon: MapIcon },
   { to: "/impact", label: "Impact Measurement", icon: ChartLine },
+  { to: "/competitors", label: "Competitor Comparison", icon: Scale },
   { to: "/quotes", label: "Customer Quotes", icon: Quote },
 ] as const;
 
