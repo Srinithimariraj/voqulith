@@ -128,3 +128,48 @@ export function TrendChart({
     </div>
   );
 }
+
+/** Two products side by side on the same categories. Values are shares (%) so different sample sizes stay comparable. */
+export function SideBySideBars({
+  data,
+  aName,
+  bName,
+  unit = "%",
+}: {
+  data: { name: string; a: number; b: number }[];
+  aName: string;
+  bName: string;
+  unit?: string;
+}) {
+  const h = Math.max(180, data.length * 56);
+  return (
+    <div style={{ height: h }}>
+      <ResponsiveContainer>
+        <BarChart data={data} layout="vertical" margin={{ left: 0, right: 24, top: 0, bottom: 0 }} barGap={3}>
+          <CartesianGrid horizontal={false} stroke="var(--border)" />
+          <XAxis
+            type="number"
+            allowDecimals={false}
+            tickFormatter={(v: number) => `${v}${unit}`}
+            tickLine={false}
+            axisLine={false}
+            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+          />
+          <YAxis
+            type="category"
+            dataKey="name"
+            width={170}
+            tickFormatter={(v: string) => (v.length > 24 ? `${v.slice(0, 23)}…` : v)}
+            tickLine={false}
+            axisLine={false}
+            tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+          />
+          <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--muted)" }} formatter={(v: number) => `${v}${unit}`} />
+          <Legend wrapperStyle={{ fontSize: 12 }} />
+          <Bar dataKey="a" name={aName} fill="var(--primary)" radius={[0, 5, 5, 0]} barSize={14} />
+          <Bar dataKey="b" name={bName} fill="var(--violet)" radius={[0, 5, 5, 0]} barSize={14} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}

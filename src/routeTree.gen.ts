@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as ChurnRouteImport } from './routes/churn'
+import { Route as CompetitorsRouteImport } from './routes/competitors'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
@@ -31,6 +32,11 @@ const AnalysisRoute = AnalysisRouteImport.update({
 const ChurnRoute = ChurnRouteImport.update({
   id: '/churn',
   path: '/churn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompetitorsRoute = CompetitorsRouteImport.update({
+  id: '/competitors',
+  path: '/competitors',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImpactRoute = ImpactRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
   '/churn': typeof ChurnRoute
+  '/competitors': typeof CompetitorsRoute
   '/impact': typeof ImpactRoute
   '/quotes': typeof QuotesRoute
   '/roadmap': typeof RoadmapRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
   '/churn': typeof ChurnRoute
+  '/competitors': typeof CompetitorsRoute
   '/impact': typeof ImpactRoute
   '/quotes': typeof QuotesRoute
   '/roadmap': typeof RoadmapRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
   '/churn': typeof ChurnRoute
+  '/competitors': typeof CompetitorsRoute
   '/impact': typeof ImpactRoute
   '/quotes': typeof QuotesRoute
   '/roadmap': typeof RoadmapRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analysis'
     | '/churn'
+    | '/competitors'
     | '/impact'
     | '/quotes'
     | '/roadmap'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analysis'
     | '/churn'
+    | '/competitors'
     | '/impact'
     | '/quotes'
     | '/roadmap'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analysis'
     | '/churn'
+    | '/competitors'
     | '/impact'
     | '/quotes'
     | '/roadmap'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalysisRoute: typeof AnalysisRoute
   ChurnRoute: typeof ChurnRoute
+  CompetitorsRoute: typeof CompetitorsRoute
   ImpactRoute: typeof ImpactRoute
   QuotesRoute: typeof QuotesRoute
   RoadmapRoute: typeof RoadmapRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/churn'
       fullPath: '/churn'
       preLoaderRoute: typeof ChurnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/competitors': {
+      id: '/competitors'
+      path: '/competitors'
+      fullPath: '/competitors'
+      preLoaderRoute: typeof CompetitorsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/impact': {
@@ -199,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalysisRoute: AnalysisRoute,
   ChurnRoute: ChurnRoute,
+  CompetitorsRoute: CompetitorsRoute,
   ImpactRoute: ImpactRoute,
   QuotesRoute: QuotesRoute,
   RoadmapRoute: RoadmapRoute,
