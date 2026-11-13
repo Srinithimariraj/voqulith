@@ -197,8 +197,8 @@ export interface ThemeComparisonRow {
 }
 
 function cell(ids: string[], key: ProductKey, out: ComparisonOutput, byId: Map<string, FeedbackItem>): SideCell {
-  const mine = [...new Set(ids)].filter((id) => out.labels[id]?.product === key || out.products[key].analyzed_ids.includes(id));
-  const scoped = mine.filter((id) => (out.labels[id]?.product ?? null) === key || !out.labels[id]);
+  const own = new Set(out.products[key].analyzed_ids);
+  const scoped = [...new Set(ids)].filter((id) => own.has(id));
   const complaints = scoped.filter((id) => {
     const s = out.labels[id]?.sentiment;
     return s === "negative" || s === "mixed";
