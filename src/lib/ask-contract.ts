@@ -238,7 +238,7 @@ export function countEvidence(ids: string[], lookup: Map<string, AskItem>, produ
     share: pct(items, total),
     by_product: products
       .filter((p) => perProduct.has(p.name))
-      .map((p) => ({ name: p.name, items: perProduct.get(p.name)!, share: pct(perProduct.get(p.name)!, p.analyzed) })),
+      .map((p) => ({ name: p.name, items: perProduct.get(p.name) ?? 0, share: pct(perProduct.get(p.name) ?? 0, p.analyzed) })),
   };
 }
 
@@ -302,7 +302,7 @@ export function groundAsk(raw: RawAsk, ctx: AskGroundingContext): AskAnswer {
       const matches = ctx.items.filter((i) => locateVerbatim(q.quote, i.text) !== null);
       if (matches.length === 1) {
         item = matches[0];
-        exact = locateVerbatim(q.quote, item!.text);
+        exact = item ? locateVerbatim(q.quote, item.text) : null;
       }
     }
     if (!item || !exact) {
@@ -361,7 +361,8 @@ export function groundAsk(raw: RawAsk, ctx: AskGroundingContext): AskAnswer {
           } else noteUnknown(t);
         });
       } else {
-        const id = m[2]!;
+        const id = m[2];
+        if (!id) continue;
         pushText(text.slice(at, start));
         if (lookup.has(id)) {
           segs.push({ t: "ref", id });
@@ -386,7 +387,7 @@ export function groundAsk(raw: RawAsk, ctx: AskGroundingContext): AskAnswer {
     if (!evidenceIds.includes(id)) evidenceIds.push(id);
   }
 
-  const limitations = [...(ctx.limitations ?? []), ...raw.limitations.map((l) => l.trim()).filter(Boolean)];
+  const limitations = [...(ctx.limitations ?? []), ...raw.limitations.map((l) => fillPlaceholders(l.trim())).filter(Boolean)];
   let status = raw.status;
   let withheld = false;
   if (evidenceIds.length === 0 && status !== "insufficient") {

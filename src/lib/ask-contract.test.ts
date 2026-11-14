@@ -97,6 +97,10 @@ describe("counts are computed by the app", () => {
     expect(r.evidence.customers).toBe(0);
     expect(r.evidence.unidentified).toBe(1);
   });
+  it("computes metric placeholders in evidence limitations too", () => {
+    const r = ground({ answer: "Refunds [FB-0001]", status: "partial", limitations: ["Only {{total_items}} items were read."] });
+    expect(r.limitations).toEqual(["Only 4 items were read."]);
+  });
   it("flags numbers the AI wrote itself but not quoted text, IDs or list markers", () => {
     expect(findUnverifiedNumbers('About 40% of users [FB-0001] said "took 12 days"\n1. Refunds')).toEqual(["40%"]);
   });

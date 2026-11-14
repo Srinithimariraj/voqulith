@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalysisRouteImport } from './routes/analysis'
+import { Route as AskRouteImport } from './routes/ask'
 import { Route as ChurnRouteImport } from './routes/churn'
 import { Route as CompetitorsRouteImport } from './routes/competitors'
 import { Route as ImpactRouteImport } from './routes/impact'
@@ -27,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const AnalysisRoute = AnalysisRouteImport.update({
   id: '/analysis',
   path: '/analysis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AskRoute = AskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChurnRoute = ChurnRouteImport.update({
@@ -68,6 +74,7 @@ const UploadRoute = UploadRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
+  '/ask': typeof AskRoute
   '/churn': typeof ChurnRoute
   '/competitors': typeof CompetitorsRoute
   '/impact': typeof ImpactRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
+  '/ask': typeof AskRoute
   '/churn': typeof ChurnRoute
   '/competitors': typeof CompetitorsRoute
   '/impact': typeof ImpactRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
+  '/ask': typeof AskRoute
   '/churn': typeof ChurnRoute
   '/competitors': typeof CompetitorsRoute
   '/impact': typeof ImpactRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/analysis'
+    | '/ask'
     | '/churn'
     | '/competitors'
     | '/impact'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/analysis'
+    | '/ask'
     | '/churn'
     | '/competitors'
     | '/impact'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/analysis'
+    | '/ask'
     | '/churn'
     | '/competitors'
     | '/impact'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalysisRoute: typeof AnalysisRoute
+  AskRoute: typeof AskRoute
   ChurnRoute: typeof ChurnRoute
   CompetitorsRoute: typeof CompetitorsRoute
   ImpactRoute: typeof ImpactRoute
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/analysis'
       fullPath: '/analysis'
       preLoaderRoute: typeof AnalysisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ask': {
+      id: '/ask'
+      path: '/ask'
+      fullPath: '/ask'
+      preLoaderRoute: typeof AskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/churn': {
@@ -218,6 +238,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalysisRoute: AnalysisRoute,
+  AskRoute: AskRoute,
   ChurnRoute: ChurnRoute,
   CompetitorsRoute: CompetitorsRoute,
   ImpactRoute: ImpactRoute,

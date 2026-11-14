@@ -38,3 +38,5 @@ use the editor.
 - Duplicate rules live in `src/lib/dedupe.ts`; only unique feedback is sent to the AI and counted as customers.
 - Sample data in `src/lib/sample-data.ts` is synthetic and must stay labelled as such in the UI (origin "sample").
 - Impact Measurement metrics (customers affected, theme share, complaint trends, period comparison) are pure functions in `src/lib/impact.ts`, computed from current unique feedback plus grounded labels; % changes are only produced when both periods meet the minimum-data rule, so trends are never estimated.
+- Ask chat reads primary and competitor data through `useProducts`, builds requests in `ask-chat.ts`, and calls the existing grounded server function; conversation context is isolated by dataset selection and signature to prevent stale cross-product evidence.
+- Ask answers render validated segments and source-record popovers for both product stores; prose containing unverified numeric claims is withheld so only programmatically computed totals and verified quotes remain visible.

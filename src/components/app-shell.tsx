@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Map as MapIcon,
   Menu,
+  MessageSquareText,
   Quote,
   Scale,
   Sparkles,
@@ -28,6 +29,7 @@ const NAV = [
   { to: "/roadmap", label: "Product Roadmap", icon: MapIcon },
   { to: "/impact", label: "Impact Measurement", icon: ChartLine },
   { to: "/competitors", label: "Competitor Comparison", icon: Scale },
+  { to: "/ask", label: "Ask Your Feedback", icon: MessageSquareText },
   { to: "/quotes", label: "Customer Quotes", icon: Quote },
 ] as const;
 
