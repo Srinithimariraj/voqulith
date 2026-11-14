@@ -260,3 +260,48 @@ export function groundAnalysis(raw: RawAnalysis, ctx: GroundingContext): Analysi
     },
   };
 }
+
+/** Per-character version of normalizeForQuote that remembers where each output char came from. */
+function normalizeWithMap(s: string): { norm: string; map: number[] } {
+  const out: string[] = [];
+  const map: number[] = [];
+  let lastSpace = true;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i]!;
+    if (/\s/.test(ch)) {
+      if (!lastSpace) {
+        out.push(" ");
+        map.push(i);
+      }
+      lastSpace = true;
+      continue;
+    }
+    lastSpace = false;
+    let rep = ch.toLowerCase();
+    if (/[\u2018\u2019\u201A\u201B`´]/.test(ch)) rep = "'";
+    else if (/[\u201C\u201D\u201E\u201F]/.test(ch)) rep = '"';
+    else if (/[\u2013\u2014]/.test(ch)) rep = "-";
+    else if (ch === "\u2026") rep = "...";
+    for (const r of rep) {
+      out.push(r);
+      map.push(i);
+    }
+  }
+  return { norm: out.join(""), map };
+}
+
+/**
+ * Find a model-proposed quote inside the original text and return the original's own
+ * characters for that span, so the quote shown is exactly what the customer wrote.
+ * Returns null when the quote is not a verbatim excerpt.
+ */
+export function locateVerbatim(quote: string, original: string): string | null {
+  const q = normalizeForQuote(quote);
+  if (q.length < 4) return null;
+  const { norm, map } = normalizeWithMap(original);
+  const at = norm.indexOf(q);
+  if (at < 0) return null;
+  const start = map[at]!;
+  const end = map[at + q.length - 1]!;
+  return original.slice(start, end + 1);
+}
