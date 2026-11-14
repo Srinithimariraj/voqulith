@@ -296,12 +296,13 @@ function normalizeWithMap(s: string): { norm: string; map: number[] } {
  * Returns null when the quote is not a verbatim excerpt.
  */
 export function locateVerbatim(quote: string, original: string): string | null {
-  const q = normalizeForQuote(quote);
+  const q = normalizeWithMap(quote.trim()).norm;
   if (q.length < 4) return null;
   const { norm, map } = normalizeWithMap(original);
   const at = norm.indexOf(q);
   if (at < 0) return null;
-  const start = map[at]!;
-  const end = map[at + q.length - 1]!;
+  const start = map[at];
+  const end = map[at + q.length - 1];
+  if (start === undefined || end === undefined) return null;
   return original.slice(start, end + 1);
 }
