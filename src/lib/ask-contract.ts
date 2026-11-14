@@ -387,7 +387,7 @@ export function groundAsk(raw: RawAsk, ctx: AskGroundingContext): AskAnswer {
     if (!evidenceIds.includes(id)) evidenceIds.push(id);
   }
 
-  const limitations = [...(ctx.limitations ?? []), ...raw.limitations.map((l) => l.trim()).filter(Boolean)];
+  const limitations = [...(ctx.limitations ?? []), ...raw.limitations.map((l) => fillPlaceholders(l.trim())).filter(Boolean)];
   let status = raw.status;
   let withheld = false;
   if (evidenceIds.length === 0 && status !== "insufficient") {
