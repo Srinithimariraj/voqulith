@@ -246,6 +246,7 @@ export function countEvidence(ids: string[], lookup: Map<string, AskItem>, produ
 export function findUnverifiedNumbers(text: string): string[] {
   const stripped = text
     .replace(PLACEHOLDER, " ")
+    .replace(/^\s*\d+[.)]\s/gm, " ")
     .replace(/“[^”]*”|"[^"]*"/g, " ")
     .replace(/\b[A-Za-z]{1,6}\d*-\d{2,}\b/g, " ");
   const out: string[] = [];
