@@ -247,10 +247,9 @@ export function findUnverifiedNumbers(text: string): string[] {
   const stripped = text
     .replace(PLACEHOLDER, " ")
     .replace(/“[^”]*”|"[^"]*"/g, " ")
-    .replace(/\b[A-Za-z]{1,6}\d*-\d{2,}\b/g, " ")
-    .replace(/\[[^\]]*\]/g, (m) => (m.split(/[\s,;]+/).every((t) => ID_LIKE.test(t.replace(/[[\]]/g, "")) || !t) ? " " : m));
+    .replace(/\b[A-Za-z]{1,6}\d*-\d{2,}\b/g, " ");
   const out: string[] = [];
-  const re = /(?:[A-Za-z₹$€£]+\s)?\d[\d,.]*\s?(?:%|percent|[A-Za-z]+)?/g;
+  const re = /(?<![A-Za-z\d_-])\d[\d,.]*(?:\s?(?:%|percent\b|[A-Za-z]+))?/g;
   for (const m of stripped.matchAll(re)) {
     const v = m[0].trim();
     if (!out.includes(v)) out.push(v);
