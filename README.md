@@ -1,5 +1,7 @@
 # VOQULITH
 
+Built in Lovable in August 2026. Code exported to GitHub in November 2026 for version control and ongoing improvements.
+
 Build a professional SaaS web application called VOICE OF COPILOT.
 
 PURPOSE: An AI-powered customer feedback intelligence platform for Product Managers. It converts feedback from multiple sources into actionable product insights.
